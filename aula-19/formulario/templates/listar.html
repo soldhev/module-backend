@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Clientes Cadastrados</title>
+</head>
+<body>
+
+  <h2>Clientes Cadastrados</h2>
+  <a href="/">Novo Cadastro</a>
+  <br><br>
+
+  {% if clientes %}
+  <table border="1" cellpadding="5">
+    <tr>
+      <th>#</th><th>Nome</th><th>CPF</th><th>Telefone</th>
+      <th>E-mail</th><th>Cidade/UF</th><th>Nascimento</th>
+    </tr>
+    {% for c in clientes %}
+    <tr>
+      <td>{{ c['id'] }}</td>
+      <td>{{ c['nome'] }} {{ c['sobrenome'] }}</td>
+      <td>{{ c['cpf'] }}</td>
+      <td>{{ c['telefone'] }}</td>
+      <td>{{ c['email'] }}</td>
+      <td>{{ c['cidade'] }}/{{ c['estado'] }}</td>
+      <td>{{ c['data_nascimento'] }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+    <p>Nenhum cliente cadastrado.</p>
+  {% endif %}
+
+</body>
+</html>

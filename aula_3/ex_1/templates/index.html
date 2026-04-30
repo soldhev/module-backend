@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br"
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trabalhando com funçoes</title>
+</head>
+<body>
+    <!-- exibindo a mesnagem-->
+    <h3>{{ mesnagem}}</h3>
+    <hr> />
+    <!--lista de alunos-->
+    <h3>  --lista de alunsos</h3>
+    {% for alunos in alunos %}
+        {{ aluno }}<br />
+    {% endfor %} 
+    <hr />
+    <!-- lista com o nome e idade--> 
+     <h3> bome e idade</h3>
+     {% for pessoas in pessoa %}
+     {{pessoa}}<br />
+     {% endfor %}
+     <hr />
+     <!-- Variavel gloval b-->
+      <h3>Valor de b apos a soma </h3>
+      {{ valor_b }}
+      <hr />
+      <!-- resultado do cauculo global-->
+       {{ resultado_cauculo }}
+
+    
+</body>
+</html>

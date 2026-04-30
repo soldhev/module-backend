@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Cadastro de Cliente</title>
+</head>
+<body>
+
+  <h2>Cadastro de Cliente</h2>
+
+  {% if sucesso %}
+    <p><strong>Cadastro realizado com sucesso!</strong></p>
+    <hr>
+  {% endif %}
+
+  {% with msgs = get_flashed_messages() %}
+    {% for msg in msgs %}
+      <p><strong>Erro: {{ msg }}</strong></p>
+    {% endfor %}
+  {% endwith %}
+
+  <form method="POST" action="/cadastrar">
+
+    <label>Nome: <input type="text" name="nome" value="{{ dados.nome if dados else '' }}" required></label><br><br>
+    <label>Sobrenome: <input type="text" name="sobrenome" value="{{ dados.sobrenome if dados else '' }}" required></label><br><br>
+    <label>Endereço: <input type="text" name="endereco" value="{{ dados.endereco if dados else '' }}" required></label><br><br>
+    <label>Número: <input type="text" name="numero" value="{{ dados.numero if dados else '' }}" required></label><br><br>
+    <label>Complemento: <input type="text" name="complemento" value="{{ dados.complemento if dados else '' }}"></label><br><br>
+    <label>Bairro: <input type="text" name="bairro" value="{{ dados.bairro if dados else '' }}" required></label><br><br>
+    <label>Cidade: <input type="text" name="cidade" value="{{ dados.cidade if dados else '' }}" required></label><br><br>
+    <label>Estado: <input type="text" name="estado" maxlength="2" value="{{ dados.estado if dados else '' }}" required></label><br><br>
+    <label>Data de Nascimento: <input type="date" name="data_nascimento" value="{{ dados.data_nascimento if dados else '' }}" required></label><br><br>
+    <label>CPF: <input type="text" name="cpf" value="{{ dados.cpf if dados else '' }}" required></label><br><br>
+    <label>RG: <input type="text" name="rg" value="{{ dados.rg if dados else '' }}"></label><br><br>
+    <label>Telefone: <input type="text" name="telefone" value="{{ dados.telefone if dados else '' }}" required></label><br><br>
+    <label>E-mail: <input type="email" name="email" value="{{ dados.email if dados else '' }}" required></label><br><br>
+
+    <button type="submit">Cadastrar</button>
+    <button type="reset">Limpar</button>
+
+  </form>
+
+  <br>
+  <a href="/listar">Ver clientes cadastrados</a>
+
+</body>
+</html>

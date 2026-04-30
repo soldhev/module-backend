@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro — Death Note Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /*
+      ════════════════════════════════════
+      ESTILOS EXCLUSIVOS DO CADASTRO
+      ════════════════════════════════════
+    */
+
+    /* Fundo da página de cadastro */
+    .auth-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 100px 1rem 60px;
+    }
+
+    /* Container branco/card do formulário */
+    .auth-box {
+      background: var(--card);
+      border: 1px solid var(--line);
+      width: 100%;
+      max-width: 500px;
+      padding: 2.5rem;
+    }
+
+    /* Abas "Cadastrar" e "Entrar" */
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 2rem;
+    }
+    .tab {
+      flex: 1;
+      background: none;
+      border: none;
+      padding: .9rem;
+      font-family: 'Inter', sans-serif;
+      font-size: .88rem;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .2s;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+    }
+    /* Aba ativa: borda branca + cor branca */
+    .tab.active {
+      color: var(--white);
+      border-bottom-color: var(--white);
+    }
+
+    /* Painel de formulário (apenas um visível) */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* Grupo de campo: label + input */
+    .field {
+      margin-bottom: 1.2rem;
+    }
+    .field label {
+      display: block;
+      font-size: .78rem;
+      letter-spacing: .5px;
+      color: var(--muted);
+      margin-bottom: .4rem;
+      text-transform: uppercase;
+    }
+    .field input, .field select {
+      width: 100%;
+      background: var(--card2);
+      border: 1px solid var(--line);
+      color: var(--white);
+      padding: 11px 14px;
+      font-family: 'Inter', sans-serif;
+      font-size: .9rem;
+      outline: none;
+      transition: border-color .2s;
+      border-radius: 3px;
+    }
+    .field input:focus, .field select:focus {
+      border-color: rgba(255,255,255,.4);
+    }
+    /* Campo com erro — borda vermelha */
+    .field input.erro { border-color: #e05050; }
+    /* Mensagem de erro */
+    .msg-erro {
+      font-size: .75rem;
+      color: #e05050;
+      margin-top: .3rem;
+      display: none;  /* aparece via JS quando há erro */
+    }
+
+    /* Indicador de força de senha */
+    .senha-forca {
+      display: flex;
+      gap: 4px;
+      margin-top: .5rem;
+    }
+    .forca-bar {
+      flex: 1;
+      height: 3px;
+      background: var(--line);
+      border-radius: 2px;
+      transition: background .3s;
+    }
+    .forca-label {
+      font-size: .72rem;
+      color: var(--muted);
+      margin-top: .3rem;
+    }
+
+    /* Linha de dois campos lado a lado */
+    .two-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .auth-box h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      color: var(--white);
+      margin-bottom: .4rem;
+    }
+    .auth-box p.sub {
+      font-size: .85rem;
+      color: var(--muted);
+      margin-bottom: 1.8rem;
+    }
+
+    /* Tela de sucesso (aparece depois do cadastro) */
+    .success-screen {
+      text-align: center;
+      padding: 1rem 0;
+      display: none;
+    }
+    .success-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+    .success-screen h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--white); margin-bottom: .8rem; }
+    .success-screen p { color: var(--muted); margin-bottom: 1.2rem; }
+    .cupom-box {
+      border: 1px dashed rgba(255,255,255,.2);
+      padding: .8rem 1.4rem;
+      display: inline-block;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--white);
+      letter-spacing: 3px;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 500px) {
+      .two-fields { grid-template-columns: 1fr; }
+      .auth-box { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header id="header">
+    <a href="index.html" class="logo">DeathNote<span>Store</span></a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="produtos.html">Produtos</a>
+      <a href="cadastro.html" class="active">Cadastro</a>
+      <a href="index.html#faq">FAQ</a>
+      <a href="index.html#contatos">Contatos</a>
+    </nav>
+    <a href="cadastro.html" class="btn-header">Entrar</a>
+  </header>
+
+
+  <div class="auth-page">
+    <div class="auth-box">
+
+      <!--
+        ABAS — mudam entre cadastro e login
+        O JS alterna as classes .active
+      -->
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('cadastro')">Criar Conta</button>
+        <button class="tab"        onclick="switchTab('login')">Entrar</button>
+      </div>
+
+
+      <!-- ════ PAINEL CADASTRO ════ -->
+      <div class="tab-panel active" id="panel-cadastro">
+        <h2>Crie sua conta</h2>
+        <p class="sub">Preencha os campos abaixo para se cadastrar.</p>
+
+        <!--
+          CAMPO: Nome completo
+          Validação: mínimo 3 caracteres, precisa ter sobrenome
+        -->
+        <div class="field">
+          <label for="c-nome">Nome Completo</label>
+          <input type="text" id="c-nome" placeholder="Light Yagami">
+          <p class="msg-erro" id="e-nome">Informe nome e sobrenome.</p>
+        </div>
+
+        <!--
+          CAMPO: E-mail
+          Validação: precisa ter @ e domínio válido
+        -->
+        <div class="field">
+          <label for="c-email">E-mail</label>
+          <input type="email" id="c-email" placeholder="light@kira.com">
+          <p class="msg-erro" id="e-email">E-mail inválido.</p>
+        </div>
+
+        <!--
+          CAMPO: CPF
+          Validação: algoritmo oficial dos dígitos verificadores
+        -->
+        <div class="field">
+          <label for="c-cpf">CPF</label>
+          <input type="text" id="c-cpf" placeholder="000.000.000-00" maxlength="14" oninput="maskCPF(this)">
+          <p class="msg-erro" id="e-cpf">CPF inválido.</p>
+        </div>
+
+        <div class="two-fields">
+          <!--
+            CAMPO: Data de Nascimento
+            Validação: usuário precisa ter pelo menos 16 anos
+          -->
+          <div class="field">
+            <label for="c-nasc">Data de Nascimento</label>
+            <input type="date" id="c-nasc">
+            <p class="msg-erro" id="e-nasc">Mínimo 16 anos.</p>
+          </div>
+
+          <!--
+            CAMPO: Telefone
+            Máscara aplicada via JS
+          -->
+          <div class="field">
+            <label for="c-tel">Telefone</label>
+            <input type="text" id="c-tel" placeholder="(11) 9 0000-0000" maxlength="16" oninput="maskTel(this)">
+            <p class="msg-erro" id="e-tel">Telefone inválido.</p>
+          </div>
+        </div>
+
+        <!--
+          CAMPO: Senha com indicador de força
+          Exibe 4 barrinhas coloridas conforme a complexidade
+        -->
+        <div class="field">
+          <label for="c-senha">Senha</label>
+          <input type="password" id="c-senha" placeholder="Mínimo 8 caracteres" oninput="checkForca(this.value)">
+          <div class="senha-forca">
+            <div class="forca-bar" id="fb1"></div>
+            <div class="forca-bar" id="fb2"></div>
+            <div class="forca-bar" id="fb3"></div>
+            <div class="forca-bar" id="fb4"></div>
+          </div>
+          <p class="forca-label" id="forca-label"></p>
+          <p class="msg-erro" id="e-senha">Mínimo 8 caracteres.</p>
+        </div>
+
+        <!--
+          CAMPO: Confirmação de senha
+          Validação: precisa ser idêntico ao campo anterior
+        -->
+        <div class="field">
+          <label for="c-conf">Confirmar Senha</label>
+          <input type="password" id="c-conf" placeholder="Repita a senha">
+          <p class="msg-erro" id="e-conf">As senhas não coincidem.</p>
+        </div>
+
+        <button class="btn-primary" style="width:100%;margin-top:.5rem" onclick="validarCadastro()">
+          Criar Conta
+        </button>
+      </div>
+
+
+      <!-- ════ PAINEL LOGIN ════ -->
+      <div class="tab-panel" id="panel-login">
+        <h2>Bem-vindo de volta</h2>
+        <p class="sub">Entre com seu e-mail e senha.</p>
+
+        <div class="field">
+          <label for="l-email">E-mail</label>
+          <input type="email" id="l-email" placeholder="light@kira.com">
+          <p class="msg-erro" id="e-lemail">E-mail inválido.</p>
+        </div>
+
+        <div class="field">
+          <label for="l-senha">Senha</label>
+          <input type="password" id="l-senha" placeholder="Sua senha">
+          <p class="msg-erro" id="e-lsenha">Senha obrigatória.</p>
+        </div>
+
+        <button class="btn-primary" style="width:100%;margin-top:.5rem" onclick="validarLogin()">
+          Entrar
+        </button>
+      </div>
+
+
+      <!-- ════ TELA DE SUCESSO (após cadastro) ════ -->
+      <div class="success-screen" id="success">
+        <div class="success-icon">✓</div>
+        <h2>Conta criada!</h2>
+        <p>Bem-vindo à Death Note Store.<br>Use seu cupom de boas-vindas:</p>
+        <div class="cupom-box">KIRA10</div>
+        <p style="font-size:.8rem;color:var(--muted)">10% de desconto na primeira compra</p>
+        <a href="produtos.html" class="btn-primary" style="display:block;text-align:center;margin-top:1.5rem">Ver Produtos</a>
+      </div>
+
+    </div>
+  </div>
+
+
+  <footer>
+    <div class="container footer-inner">
+      <p class="footer-logo">DeathNote<span>Store</span></p>
+      <p class="footer-copy"> © 2026 Death Note Store -Todos os direitos reservados.</p>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="produtos.html">Produtos</a>
+      </div>
+    </div>
+  </footer>
+
+  <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div>
+  </div>
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
+
+  <script>
+    /*
+      ════════════════════════════════════
+      TROCA DE ABAS
+      Ativa a aba e o painel correto
+      ════════════════════════════════════
+    */
+    function switchTab(which) {
+      document.querySelectorAll('.tab').forEach((t,i) => {
+        t.classList.toggle('active', (i===0 && which==='cadastro') || (i===1 && which==='login'));
+      });
+      document.getElementById('panel-cadastro').classList.toggle('active', which==='cadastro');
+      document.getElementById('panel-login').classList.toggle('active', which==='login');
+    }
+
+    /*
+      ════════════════════════════════════
+      MÁSCARA CPF → 000.000.000-00
+      Remove tudo que não é número e formata
+      ════════════════════════════════════
+    */
+    function maskCPF(el) {
+      let v = el.value.replace(/\D/g,'').slice(0,11);
+      if (v.length > 9) v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/,'$1.$2.$3-$4');
+      else if (v.length > 6) v = v.replace(/(\d{3})(\d{3})(\d{1,3})/,'$1.$2.$3');
+      else if (v.length > 3) v = v.replace(/(\d{3})(\d{1,3})/,'$1.$2');
+      el.value = v;
+    }
+
+    /*
+      ════════════════════════════════════
+      MÁSCARA TELEFONE → (11) 9 0000-0000
+      ════════════════════════════════════
+    */
+    function maskTel(el) {
+      let v = el.value.replace(/\D/g,'').slice(0,11);
+      if (v.length > 7) v = v.replace(/(\d{2})(\d{1})(\d{4})(\d{1,4})/,'($1) $2 $3-$4');
+      else if (v.length > 2) v = v.replace(/(\d{2})(\d+)/,'($1) $2');
+      el.value = v;
+    }
+
+    /*
+      ════════════════════════════════════
+      FORÇA DA SENHA
+      Conta maiúsculas, números e símbolos
+      Pinta as barrinhas de 1 a 4
+      ════════════════════════════════════
+    */
+    function checkForca(val) {
+      let score = 0;
+      if (val.length >= 8)       score++;
+      if (/[A-Z]/.test(val))     score++;
+      if (/[0-9]/.test(val))     score++;
+      if (/[^A-Za-z0-9]/.test(val)) score++;
+
+      const cores = ['#e05050','#e08a30','#e0c030','#50c878'];
+      const labels = ['Fraca','Média','Boa','Forte'];
+      for (let i = 1; i <= 4; i++) {
+        const bar = document.getElementById('fb'+i);
+        bar.style.background = i <= score ? cores[score-1] : 'var(--line)';
+      }
+      document.getElementById('forca-label').textContent = val.length ? labels[score-1] || '' : '';
+    }
+
+    /*
+      ════════════════════════════════════
+      VALIDAÇÃO DO CPF
+      Algoritmo oficial dos dígitos verificadores:
+      1. Soma os 9 primeiros dígitos multiplicados por 10..2
+      2. Calcula o 1º dígito verificador
+      3. Repete com 11..2 para o 2º dígito
+      ════════════════════════════════════
+    */
+    function validarCPF(cpf) {
+      cpf = cpf.replace(/\D/g,'');
+      if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+      let soma = 0;
+      for (let i = 0; i < 9; i++) soma += parseInt(cpf[i]) * (10 - i);
+      let r = (soma * 10) % 11;
+      if (r === 10 || r === 11) r = 0;
+      if (r !== parseInt(cpf[9])) return false;
+      soma = 0;
+      for (let i = 0; i < 10; i++) soma += parseInt(cpf[i]) * (11 - i);
+      r = (soma * 10) % 11;
+      if (r === 10 || r === 11) r = 0;
+      return r === parseInt(cpf[10]);
+    }
+
+    /*
+      ════════════════════════════════════
+      VALIDAÇÃO DO CADASTRO
+      Checa cada campo e exibe erros
+      Só submete se tudo estiver correto
+      ════════════════════════════════════
+    */
+    function validarCadastro() {
+      let ok = true;
+
+      // helper: mostra ou esconde erro
+      function check(input, erroId, condicao) {
+        const err = document.getElementById(erroId);
+        if (!condicao) {
+          input.classList.add('erro');
+          err.style.display = 'block';
+          ok = false;
+        } else {
+          input.classList.remove('erro');
+          err.style.display = 'none';
+        }
+      }
+
+      const nome  = document.getElementById('c-nome');
+      const email = document.getElementById('c-email');
+      const cpf   = document.getElementById('c-cpf');
+      const nasc  = document.getElementById('c-nasc');
+      const tel   = document.getElementById('c-tel');
+      const senha = document.getElementById('c-senha');
+      const conf  = document.getElementById('c-conf');
+
+      // nome: precisa de pelo menos 2 palavras
+      check(nome,  'e-nome',  nome.value.trim().split(' ').filter(p=>p).length >= 2);
+      // email: regex básico
+      check(email, 'e-email', /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value));
+      // cpf: algoritmo oficial
+      check(cpf,   'e-cpf',   validarCPF(cpf.value));
+      // data: pelo menos 16 anos
+      const hoje = new Date();
+      const dn   = new Date(nasc.value);
+      const idade = (hoje - dn) / (1000*60*60*24*365.25);
+      check(nasc, 'e-nasc', nasc.value && idade >= 16);
+      // telefone: pelo menos 10 dígitos
+      check(tel, 'e-tel', tel.value.replace(/\D/g,'').length >= 10);
+      // senha: mínimo 8 caracteres
+      check(senha, 'e-senha', senha.value.length >= 8);
+      // confirmação: idêntica à senha
+      check(conf, 'e-conf', conf.value === senha.value && conf.value !== '');
+
+      // Se tudo OK: esconde formulário, mostra sucesso
+      if (ok) {
+        document.getElementById('panel-cadastro').style.display = 'none';
+        document.querySelector('.tabs').style.display = 'none';
+        document.getElementById('success').style.display = 'block';
+      }
+    }
+
+    /*
+      ════════════════════════════════════
+      VALIDAÇÃO DO LOGIN
+      ════════════════════════════════════
+    */
+    function validarLogin() {
+      const email = document.getElementById('l-email');
+      const senha = document.getElementById('l-senha');
+      let ok = true;
+
+      function check(el, erroId, cond) {
+        const err = document.getElementById(erroId);
+        if (!cond) { el.classList.add('erro'); err.style.display='block'; ok=false; }
+        else        { el.classList.remove('erro'); err.style.display='none'; }
+      }
+
+      check(email, 'e-lemail', /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value));
+      check(senha, 'e-lsenha', senha.value.length >= 1);
+
+      if (ok) {
+        alert('Login realizado! (demonstração)');
+        window.location.href = 'index.html';
+      }
+    }
+
+    window.addEventListener('scroll', () => {
+      document.getElementById('header').classList.toggle('scrolled', window.scrollY > 50);
+    });
+  </script>
+
+</body>
+</html>
